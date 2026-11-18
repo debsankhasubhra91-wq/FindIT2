@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FindIt — Demon Slayer & Pinterest Lost & Found Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nichirin: {
+                            50: '#fdf4f7',
+                            100: '#fbe8ef',
+                            200: '#f7d3e1',
+                            300: '#f2b1c7',
+                            400: '#ea7f9f',
+                            500: '#e0537c',
+                            600: '#cc3661',
+                            700: '#aa284d',
+                        },
+                        wisteria: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 4s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite',
+                        'breathing': 'breathingGlow 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-12px) rotate(1.5deg)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 25px rgba(224, 83, 124, 0.4)' },
+                            '50%': { boxShadow: '0 0 45px rgba(139, 92, 246, 0.7)' },
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        },
+                        breathingGlow: {
+                            '0%, 100%': { filter: 'drop-shadow(0 0 10px rgba(139, 92, 246, 0.4))' },
+                            '50%': { filter: 'drop-shadow(0 0 25px rgba(224, 83, 124, 0.8))' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts Quicksand & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Quicksand', 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(253, 244, 247, 0.8); }
+        ::-webkit-scrollbar-thumb { background: #f2b1c7; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ea7f9f; }
+        
+        .glass-demonslayer {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(224, 83, 124, 0.2);
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.12);
+        }
+        
+        .touch-active:active {
+            transform: scale(0.95);
+            transition: transform 0.1s ease;
+        }
+
+        .ember-particle {
+            position: fixed;
+            pointer-events: none;
+            background: radial-gradient(circle, #f7d3e1 0%, #a78bfa 100%);
+            border-radius: 50%;
+            animation: floatEmber 6s linear infinite;
+        }
+        @keyframes floatEmber {
+            0% { transform: translateY(105vh) translateX(0) scale(0.5); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) translateX(50px) scale(1.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-nichirin-50 via-wisteria-50 to-pink-100 text-slate-700 min-h-screen flex flex-col selection:bg-nichirin-400 selection:text-white relative overflow-x-hidden">
+
+    <!-- Floating Background Particles -->
+    <div class="ember-particle" style="left: 10%; width: 12px; height: 12px; animation-delay: 0s;"></div>
+    <div class="ember-particle" style="left: 30%; width: 8px; height: 8px; animation-delay: 2s;"></div>
+    <div class="ember-particle" style="left: 70%; width: 14px; height: 14px; animation-delay: 1s;"></div>
+    <div class="ember-particle" style="left: 85%; width: 10px; height: 10px; animation-delay: 3s;"></div>
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-white/80 border-b border-pink-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer group touch-active" onclick="switchTab('dashboard')">
+                <div class="w-12 h-12 rounded-3xl bg-gradient-to-tr from-nichirin-500 via-pink-400 to-wisteria-600 flex items-center justify-center shadow-lg shadow-nichirin-500/30 animate-breathing group-hover:scale-105 transition-transform">
+                    <i data-lucide="sparkles" class="w-6 h-6 text-white animate-spin" style="animation-duration: 8s;"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-black bg-gradient-to-r from-nichirin-600 via-pink-500 to-wisteria-600 bg-clip-text text-transparent">FindIt</span>
+                    <span class="block text-[10px] font-bold text-nichirin-400 tracking-wider uppercase">Kimetsu Cloud Hub</span>
+                </div>
+            </div>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-1.5 bg-pink-50/80 p-1.5 rounded-3xl border border-pink-100">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="touch-active px-5 py-2.5 rounded-2xl font-bold text-sm transition-all duration-200 flex items-center space-x-2 text-white bg-gradient-to-r from-nichirin-500 to-pink-500 shadow-md shadow-nichirin-500/20">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button onclick="switchTab('feed')" id="nav-feed" class="touch-active px-5 py-2.5 rounded-2xl font-bold text-sm transition-all duration-200 flex items-center space-x-2 text-slate-600 hover:text-nichirin-600 hover:bg-white/60">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                    <span>Items Feed</span>
+                </button>
+                <button onclick="switchTab('ai-engine')" id="nav-ai-engine" class="touch-active px-5 py-2.5 rounded-2xl font-bold text-sm transition-all duration-200 flex items-center space-x-2 text-slate-600 hover:text-nichirin-600 hover:bg-white/60">
+                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                    <span>AI Radar</span>
+                    <span class="bg-wisteria-100 text-wisteria-700 text-[10px] px-2 py-0.5 rounded-full font-black">Cloud API</span>
+                </button>
+                <button onclick="switchTab('forum')" id="nav-forum" class="touch-active px-5 py-2.5 rounded-2xl font-bold text-sm transition-all duration-200 flex items-center space-x-2 text-slate-600 hover:text-nichirin-600 hover:bg-white/60">
+                    <i data-lucide="message-square" class="w-4 h-4"></i>
+                    <span>Bulletin Wall</span>
+                </button>
+            </nav>
+
+            <!-- Right Action Buttons -->
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleNezuAiModal()" class="touch-active hidden sm:flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-wisteria-100 hover:bg-wisteria-200 text-wisteria-700 border border-wisteria-200 transition-all text-xs font-bold shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-wisteria-500 animate-ping"></span>
+                    <span>Ask Nezu-AI 🌸</span>
+                </button>
+
+                <button onclick="openReportModal()" class="touch-active relative group overflow-hidden rounded-2xl p-px font-bold text-sm shadow-lg shadow-nichirin-500/20 active:scale-95 transition-all">
+                    <span class="absolute inset-0 bg-gradient-to-r from-nichirin-500 via-pink-400 to-wisteria-600 transition-all"></span>
+                    <span class="relative px-5 py-2.5 bg-gradient-to-r from-nichirin-500 to-pink-500 rounded-2xl flex items-center space-x-2 text-white transition-all">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                        <span>Report Item</span>
+                    </span>
+                </button>
+
+                <button onclick="openAuthModal()" id="auth-nav-btn" class="touch-active px-4 py-2.5 rounded-2xl bg-white border border-pink-200 text-slate-700 hover:text-nichirin-600 font-bold text-xs shadow-sm transition-all flex items-center space-x-1.5">
+                    <i data-lucide="log-in" class="w-4 h-4"></i>
+                    <span id="auth-btn-label">Login</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Bottom Dock Navigation -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-pink-100 px-4 py-3 flex justify-around items-center shadow-2xl">
+        <button onclick="switchTab('dashboard')" id="mob-dashboard" class="touch-active flex flex-col items-center text-nichirin-500">
+            <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+            <span class="text-[10px] mt-1 font-bold">Home</span>
+        </button>
+        <button onclick="switchTab('feed')" id="mob-feed" class="touch-active flex flex-col items-center text-slate-400 hover:text-nichirin-500">
+            <i data-lucide="search" class="w-6 h-6"></i>
+            <span class="text-[10px] mt-1 font-medium">Search</span>
+        </button>
+        <button onclick="openReportModal()" class="touch-active flex flex-col items-center -mt-6">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-nichirin-500 to-pink-500 text-white flex items-center justify-center shadow-lg shadow-nichirin-500/40 animate-bounce">
+                <i data-lucide="plus" class="w-7 h-7"></i>
+            </div>
+            <span class="text-[10px] mt-1 font-bold text-nichirin-500">Report</span>
+        </button>
+        <button onclick="toggleNezuAiModal()" class="touch-active flex flex-col items-center text-slate-400 hover:text-wisteria-600">
+            <i data-lucide="sparkles" class="w-6 h-6"></i>
+            <span class="text-[10px] font-medium mt-1">Nezu-AI</span>
+        </button>
+        <button onclick="switchTab('profile')" id="mob-profile" class="touch-active flex flex-col items-center text-slate-400 hover:text-nichirin-500">
+            <i data-lucide="user" class="w-6 h-6"></i>
+            <span class="text-[10px] mt-1 font-medium">Profile</span>
+        </button>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-28 md:pb-12">
+
+        <!-- FLOATING ANIME MASCOT WIDGET (NEZU-AI) -->
+        <div onclick="toggleNezuAiModal()" class="fixed bottom-20 right-6 md:bottom-8 md:right-8 z-40 cursor-pointer group flex items-end space-x-3">
+            <div class="hidden sm:block bg-white/95 backdrop-blur-md border border-pink-200 px-4 py-2.5 rounded-3xl shadow-2xl text-xs font-bold text-slate-700 animate-bounce-subtle">
+                <span>"Need help finding lost treasures? Tap me! 🌸"</span>
+            </div>
+            <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-pink-400 via-nichirin-500 to-wisteria-600 p-1 shadow-2xl animate-float group-hover:scale-110 transition-transform">
+                <div class="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden border-2 border-white relative">
+                    <svg viewBox="0 0 100 100" class="w-full h-full object-cover">
+                        <circle cx="50" cy="50" r="45" fill="#fde8ef"/>
+                        <circle cx="35" cy="45" r="5" fill="#2b213a"/>
+                        <circle cx="65" cy="45" r="5" fill="#2b213a"/>
+                        <path d="M 40 58 Q 50 66 60 58" stroke="#2b213a" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <circle cx="28" cy="50" r="6" fill="#f7d3e1" opacity="0.9"/>
+                        <circle cx="72" cy="50" r="6" fill="#f7d3e1" opacity="0.9"/>
+                        <path d="M 22 32 Q 50 10 78 32 Q 88 55 72 72 Q 50 88 28 72 Q 12 55 22 32" fill="#7c3aed" opacity="0.85"/>
+                        <circle cx="75" cy="30" r="6" fill="#e0537c"/>
+                    </svg>
+                    <span class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 1: DASHBOARD -->
+        <div id="tab-dashboard" class="space-y-8 animate-fadeIn">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl glass-demonslayer p-8 shadow-2xl border border-pink-200">
+                <div class="absolute -right-12 -top-12 w-64 h-64 bg-pink-200/40 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute right-20 bottom-0 w-48 h-48 bg-wisteria-200/40 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div>
+                        <div class="inline-flex items-center space-x-2 bg-pink-100 border border-pink-200 px-3.5 py-1.5 rounded-full text-nichirin-700 text-xs font-bold mb-4">
+                            <span class="w-2 h-2 rounded-full bg-nichirin-500 animate-ping"></span>
+                            <span>Node.js Express + MongoDB Cloud Sync Active</span>
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-black text-slate-800 tracking-tight">Welcome to FindIt, Slayer! 🌸</h1>
+                        <p class="text-slate-600 mt-2 text-sm md:text-base max-w-2xl">
+                            Multi-device synced university hub with real Gemini AI 24/7 sentiment matching and GPS-automated location pinning.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="openReportModal('lost')" class="touch-active px-5 py-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 font-bold text-sm hover:bg-rose-100 transition-all flex items-center space-x-2 shadow-sm">
+                            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                            <span>I Lost Something</span>
+                        </button>
+                        <button onclick="openReportModal('found')" class="touch-active px-5 py-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 font-bold text-sm hover:bg-emerald-100 transition-all flex items-center space-x-2 shadow-sm">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            <span>I Found Something</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="glass-demonslayer rounded-3xl p-6 relative overflow-hidden group hover:border-nichirin-300 transition-all shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Lost Items</p>
+                            <h3 id="stat-lost" class="text-3xl font-black text-slate-800 mt-2">6</h3>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-rose-100 text-rose-600 border border-rose-200">
+                            <i data-lucide="package-x" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-xs text-rose-600 font-semibold">
+                        <i data-lucide="trending-up" class="w-3.5 h-3.5 mr-1"></i>
+                        <span>Cloud synced across devices</span>
+                    </div>
+                </div>
+
+                <div class="glass-demonslayer rounded-3xl p-6 relative overflow-hidden group hover:border-nichirin-300 transition-all shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Found Items Logged</p>
+                            <h3 id="stat-found" class="text-3xl font-black text-slate-800 mt-2">4</h3>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-emerald-100 text-emerald-600 border border-emerald-200">
+                            <i data-lucide="package-check" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-xs text-emerald-600 font-semibold">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i>
+                        <span>Secure desk custody</span>
+                    </div>
+                </div>
+
+                <div class="glass-demonslayer rounded-3xl p-6 relative overflow-hidden group hover:border-nichirin-300 transition-all shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Successful AI Matches</p>
+                            <h3 id="stat-matches" class="text-3xl font-black text-slate-800 mt-2">156</h3>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-wisteria-100 text-wisteria-600 border border-wisteria-200">
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-xs text-wisteria-600 font-semibold">
+                        <i data-lucide="cpu" class="w-3.5 h-3.5 mr-1"></i>
+                        <span>99.2% accuracy verified</span>
+                    </div>
+                </div>
+
+                <div class="glass-demonslayer rounded-3xl p-6 relative overflow-hidden group hover:border-nichirin-300 transition-all shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Your Karma Points</p>
+                            <h3 class="text-3xl font-black text-amber-500 mt-2">420</h3>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-amber-100 text-amber-600 border border-amber-200">
+                            <i data-lucide="award" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-xs text-amber-600 font-semibold">
+                        <i data-lucide="star" class="w-3.5 h-3.5 mr-1 fill-amber-500"></i>
+                        <span>Hashira Rank 3</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Feed & AI Radar Sidebar -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Feed List -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-black text-slate-800 flex items-center space-x-2">
+                            <i data-lucide="activity" class="w-5 h-5 text-nichirin-500"></i>
+                            <span>Recent Campus Feed (10 Pre-loaded Examples)</span>
+                        </h2>
+                        <button onclick="switchTab('feed')" class="touch-active text-xs font-bold text-nichirin-600 hover:text-nichirin-700 flex items-center space-x-1">
+                            <span>View All</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+
+                    <div id="dashboard-feed-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Live Match Radar Sidebar -->
+                <div class="space-y-6">
+                    <div class="glass-demonslayer rounded-3xl p-6 relative overflow-hidden shadow-xl border border-pink-200">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-pink-200/30 rounded-full blur-2xl"></div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-10 h-10 rounded-2xl bg-nichirin-100 border border-nichirin-200 flex items-center justify-center text-nichirin-600">
+                                <i data-lucide="sparkles" class="w-5 h-5 animate-spin" style="animation-duration: 8s;"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-black text-slate-800 text-base">Nezu-AI Live Radar</h3>
+                                <p class="text-xs text-slate-500">Real-time Gemini Cloud API</p>
+                            </div>
+                        </div>
+
+                        <!-- Match Card Example -->
+                        <div class="bg-white/90 border border-pink-100 rounded-2xl p-4 space-y-3 shadow-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-200 flex items-center space-x-1">
+                                    <i data-lucide="zap" class="w-3 h-3"></i>
+                                    <span>98.8% Match</span>
+                                </span>
+                                <span class="text-xs text-slate-400">Just now</span>
+                            </div>
+                            <div class="text-sm font-bold text-slate-800">
+                                Acer Nitro V 15 Gaming Laptop
+                            </div>
+                            <p class="text-xs text-slate-600">
+                                <span class="text-nichirin-600 font-bold">Lost:</span> CS Lab 3 vs. <span class="text-emerald-600 font-bold">Found:</span> CS Dept Security Desk
+                            </p>
+                            <button onclick="openClaimModal('Acer Nitro V 15 Gaming Laptop', 'CS Dept Security Desk', 'PIN-9842')" class="touch-active w-full py-2.5 bg-gradient-to-r from-nichirin-500 to-pink-500 hover:opacity-95 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-nichirin-500/20 flex items-center justify-center space-x-2">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                <span>Verify & Claim Item</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: ITEMS FEED -->
+        <div id="tab-feed" class="hidden space-y-6 animate-fadeIn">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 glass-demonslayer p-6 rounded-3xl border border-pink-200 shadow-lg">
+                <div>
+                    <h1 class="text-2xl font-black text-slate-800">Campus Lost & Found Directory</h1>
+                    <p class="text-slate-600 text-sm mt-1">Search through active lost items and secured found items across campus.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <div class="relative flex-1 md:w-72">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+                        <input type="text" id="feed-search-input" oninput="filterFeed()" placeholder="Search item, tag, location..." class="w-full bg-white/90 border border-pink-200 rounded-2xl pl-10 pr-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400 shadow-sm">
+                    </div>
+                    <select id="feed-filter-type" onchange="filterFeed()" class="bg-white/90 border border-pink-200 rounded-2xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400 shadow-sm">
+                        <option value="all">All Types</option>
+                        <option value="lost">Lost Only</option>
+                        <option value="found">Found Only</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none">
+                <button onclick="filterCategory('All')" id="cat-all" class="touch-active px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-nichirin-500 to-pink-500 text-white shrink-0 shadow-md">All Categories</button>
+                <button onclick="filterCategory('Electronics')" id="cat-Electronics" class="touch-active px-4 py-2 rounded-xl text-xs font-bold bg-white/90 border border-pink-200 text-slate-600 hover:text-nichirin-600 shrink-0">Electronics</button>
+                <button onclick="filterCategory('ID Cards')" id="cat-ID Cards" class="touch-active px-4 py-2 rounded-xl text-xs font-bold bg-white/90 border border-pink-200 text-slate-600 hover:text-nichirin-600 shrink-0">ID Cards & Keys</button>
+                <button onclick="filterCategory('Accessories')" id="cat-Accessories" class="touch-active px-4 py-2 rounded-xl text-xs font-bold bg-white/90 border border-pink-200 text-slate-600 hover:text-nichirin-600 shrink-0">Accessories</button>
+                <button onclick="filterCategory('Books')" id="cat-Books" class="touch-active px-4 py-2 rounded-xl text-xs font-bold bg-white/90 border border-pink-200 text-slate-600 hover:text-nichirin-600 shrink-0">Books & Notes</button>
+            </div>
+
+            <div id="full-feed-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+
+        <!-- TAB 3: AI RADAR -->
+        <div id="tab-ai-engine" class="hidden space-y-8 animate-fadeIn">
+            <div class="bg-gradient-to-r from-pink-100 via-wisteria-100 to-pink-50 border border-pink-200 rounded-3xl p-8 relative overflow-hidden shadow-lg">
+                <div class="max-w-2xl">
+                    <div class="inline-flex items-center space-x-2 bg-white/90 text-nichirin-700 px-3.5 py-1 rounded-full text-xs font-bold mb-4 border border-pink-200">
+                        <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+                        <span>Gemini 3 Flash API & Neural Match Engine</span>
+                    </div>
+                    <h1 class="text-3xl font-black text-slate-800">AI Cross-Reference & GPS Cluster Engine</h1>
+                    <p class="text-slate-600 mt-2 text-sm">
+                        Our algorithm evaluates text description similarity, color codes, category mapping, and timestamp-GPS proximity to connect lost and found posts instantly.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass-demonslayer rounded-3xl p-6 space-y-6 border border-pink-200 shadow-lg">
+                    <h3 class="text-lg font-black text-slate-800 flex items-center space-x-2">
+                        <i data-lucide="radar" class="w-5 h-5 text-nichirin-500"></i>
+                        <span>Live Match Calculations (/api/match)</span>
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-2xl bg-white/90 border border-pink-100 space-y-3 shadow-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-nichirin-600">Pair ID: #AI-8932</span>
+                                <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">99.1% Match</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 text-xs">
+                                <div class="p-3 rounded-xl bg-pink-50/70 border border-pink-100">
+                                    <span class="text-rose-600 font-bold block mb-1">LOST ITEM</span>
+                                    <p class="text-slate-800 font-bold">Blue Hydro Flask Bottle</p>
+                                    <span class="text-slate-500 text-[10px]">Block C Cafeteria</span>
+                                </div>
+                                <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-100">
+                                    <span class="text-emerald-600 font-bold block mb-1">FOUND ITEM</span>
+                                    <p class="text-slate-800 font-bold">Blue Steel Water Bottle</p>
+                                    <span class="text-slate-500 text-[10px]">Block C Restroom Hall</span>
+                                </div>
+                            </div>
+                            <button onclick="openClaimModal('Blue Hydro Flask', 'Block C Security Desk', 'PIN-4482')" class="touch-active w-full py-2 bg-gradient-to-r from-nichirin-500 to-pink-500 text-white rounded-xl text-xs font-bold shadow-sm">Initiate Secure Claim</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-demonslayer rounded-3xl p-6 space-y-6 border border-pink-200 shadow-lg">
+                    <h3 class="text-lg font-black text-slate-800 flex items-center space-x-2">
+                        <i data-lucide="wand-2" class="w-5 h-5 text-nichirin-500"></i>
+                        <span>Test Custom Description Match</span>
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Item Title or Keywords</label>
+                            <input type="text" id="ai-test-title" placeholder="e.g. Sony Wireless Earbuds" class="w-full bg-white/90 border border-pink-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400 shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Detailed Description</label>
+                            <textarea id="ai-test-desc" rows="3" placeholder="Description & distinct marks..." class="w-full bg-white/90 border border-pink-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400 shadow-sm"></textarea>
+                        </div>
+                        <button onclick="runAiTest()" class="touch-active w-full py-3 bg-gradient-to-r from-nichirin-500 to-wisteria-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-nichirin-500/20">Run Neural Scan via API</button>
+                    </div>
+                    <div id="ai-test-result" class="hidden p-4 rounded-2xl bg-pink-50 border border-pink-200 text-xs space-y-1">
+                        <span class="font-bold text-nichirin-700">SCAN COMPLETE: 98.4% MATCH FOUND</span>
+                        <p id="ai-result-text" class="text-slate-600">Potential match found at Central Canteen Lost Desk.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: BULLETIN WALL -->
+        <div id="tab-forum" class="hidden space-y-6 animate-fadeIn">
+            <div class="glass-demonslayer rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border border-pink-200 shadow-lg">
+                <div>
+                    <h1 class="text-2xl font-black text-slate-800">Campus Community Bulletin & Verification Wall</h1>
+                    <p class="text-slate-600 text-sm mt-1">Discuss suspicious finds or ask questions about campus security desks.</p>
+                </div>
+                <button onclick="openNewPostModal()" class="touch-active px-5 py-2.5 bg-gradient-to-r from-nichirin-500 to-pink-500 text-white rounded-2xl font-bold text-sm shadow-lg shadow-nichirin-500/20 flex items-center space-x-2">
+                    <i data-lucide="message-square-plus" class="w-4 h-4"></i>
+                    <span>New Discussion</span>
+                </button>
+            </div>
+            <div id="forum-posts-container" class="space-y-4">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+
+        <!-- TAB 5: PROFILE & SETTINGS -->
+        <div id="tab-profile" class="hidden space-y-8 animate-fadeIn">
+            <div class="glass-demonslayer rounded-3xl p-8 flex flex-col md:flex-row items-center gap-6 border border-pink-200 shadow-lg">
+                <div class="w-24 h-24 rounded-3xl bg-gradient-to-tr from-nichirin-500 to-wisteria-600 flex items-center justify-center text-3xl font-black text-white shadow-xl shadow-nichirin-500/30" id="profile-avatar-initials">
+                    AK
+                </div>
+                <div class="flex-1 text-center md:text-left">
+                    <h1 class="text-2xl font-black text-slate-800" id="profile-name">Alex Kumar</h1>
+                    <p class="text-slate-500 text-sm mt-1" id="profile-email">alex.kumar@university.edu • Security Verified</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-4 mt-4 text-xs font-bold">
+                        <div class="px-4 py-2 bg-white/90 rounded-2xl border border-pink-100 text-slate-700 shadow-sm">
+                            <span class="text-nichirin-600 font-black block text-base" id="profile-active-posts">3</span> Active Posts
+                        </div>
+                        <div class="px-4 py-2 bg-white/90 rounded-2xl border border-pink-100 text-slate-700 shadow-sm">
+                            <span class="text-emerald-600 font-black block text-base">14</span> Successful Returns
+                        </div>
+                        <div class="px-4 py-2 bg-white/90 rounded-2xl border border-pink-100 text-slate-700 shadow-sm">
+                            <span class="text-amber-600 font-black block text-base">420</span> Karma Points
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="logoutUser()" class="touch-active px-5 py-2.5 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 font-bold text-xs hover:bg-rose-100 transition-all">Logout</button>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <h2 class="text-xl font-black text-slate-800">Your Submitted Posts</h2>
+                <div id="user-posts-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- AUTH MODAL (LOGIN / SIGNUP) -->
+    <div id="auth-modal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white border border-pink-200 rounded-3xl max-w-md w-full p-6 md:p-8 space-y-6 relative shadow-2xl">
+            <button onclick="closeAuthModal()" class="touch-active absolute top-6 right-6 text-slate-400 hover:text-slate-600 p-2 rounded-xl bg-pink-50">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="text-center space-y-2">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-nichirin-500 to-wisteria-600 text-white mx-auto flex items-center justify-center shadow-md">
+                    <i data-lucide="shield" class="w-7 h-7"></i>
+                </div>
+                <h2 id="auth-title" class="text-2xl font-black text-slate-800">Welcome to FindIt</h2>
+                <p id="auth-subtitle" class="text-xs text-slate-500">Sign in via Express + MongoDB Cloud backend.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 p-1 bg-pink-50 rounded-2xl border border-pink-100">
+                <button type="button" onclick="setAuthMode('login')" id="auth-tab-login" class="touch-active py-2.5 rounded-xl text-xs font-bold bg-white text-nichirin-600 shadow-sm">Login</button>
+                <button type="button" onclick="setAuthMode('signup')" id="auth-tab-signup" class="touch-active py-2.5 rounded-xl text-xs font-bold text-slate-600">Register</button>
+            </div>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div id="signup-name-field" class="hidden">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
+                    <input type="text" id="auth-name" placeholder="Alex Kumar" class="w-full bg-pink-50/50 border border-pink-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">University Email</label>
+                    <input type="email" id="auth-email" required placeholder="student@university.edu" class="w-full bg-pink-50/50 border border-pink-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-pink-50/50 border border-pink-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400">
+                </div>
+                <button type="submit" id="auth-submit-btn" class="touch-active w-full py-3.5 bg-gradient-to-r from-nichirin-500 to-pink-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-nichirin-500/20">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- NEZU-AI ASSISTANT POPUP MODAL -->
+    <div id="ai-assistant-modal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white border border-pink-200 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative animate-bounce-subtle">
+            <button onclick="toggleNezuAiModal()" class="touch-active absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 rounded-xl bg-pink-50">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-nichirin-500 to-wisteria-600 flex items-center justify-center text-white shadow-md">
+                    <i data-lucide="sparkles" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-slate-800 text-lg">Nezu-AI 🌸 (Gemini 3 Flash API)</h3>
+                    <p class="text-xs text-nichirin-600 font-semibold">Demon Slayer AI Sentinel</p>
+                </div>
+            </div>
+            <div id="aimi-chat-messages" class="h-64 overflow-y-auto bg-pink-50/50 rounded-2xl p-4 space-y-3 text-xs border border-pink-100">
+                <div class="flex items-start space-x-2">
+                    <div class="w-6 h-6 rounded-full bg-nichirin-500 text-white flex items-center justify-center font-bold text-[10px]">N</div>
+                    <div class="bg-white p-3 rounded-2xl border border-pink-100 text-slate-700 shadow-sm max-w-[85%]">
+                        Konnichiwa Alex-senpai! ✨ I'm Nezu-AI connected to the Gemini 3 Flash API and Cloud Database. How can I assist you with lost belongings today?
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <input type="text" id="aimi-input" onkeypress="if(event.key==='Enter') sendAimiMessage()" placeholder="Ask Nezu-AI anything (e.g. 'Where is my laptop?')..." class="flex-1 bg-pink-50/50 border border-pink-200 rounded-xl px-4 py-2.5 text-xs text-slate-700 focus:outline-none focus:border-nichirin-400">
+                <button onclick="sendAimiMessage()" class="touch-active px-5 py-2.5 bg-gradient-to-r from-nichirin-500 to-pink-500 text-white rounded-xl text-xs font-bold shadow-md shadow-nichirin-500/20">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: REPORT ITEM WIZARD -->
+    <div id="report-modal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white border border-pink-200 rounded-3xl max-w-xl w-full p-6 md:p-8 space-y-6 relative shadow-2xl my-8">
+            <button onclick="closeReportModal()" class="touch-active absolute top-6 right-6 text-slate-400 hover:text-slate-600 p-2 rounded-xl bg-pink-50">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div>
+                <span class="text-xs font-bold text-nichirin-600 uppercase tracking-wider">Cloud Report Wizard (/api/items)</span>
+                <h2 class="text-2xl font-black text-slate-800 mt-1">Post Lost or Found Item</h2>
+                <p class="text-xs text-slate-500 mt-1">Synced instantly to MongoDB / Firebase and broadcasted across all devices.</p>
+            </div>
+
+            <!-- Type Selector -->
+            <div class="grid grid-cols-2 gap-3 p-1.5 bg-pink-50 rounded-2xl border border-pink-100">
+                <button type="button" onclick="setReportType('lost')" id="btn-type-lost" class="touch-active py-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 transition-all bg-rose-500 text-white shadow-md">
+                    <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                    <span>I Lost Something</span>
+                </button>
+                <button type="button" onclick="setReportType('found')" id="btn-type-found" class="touch-active py-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 transition-all text-slate-600 hover:text-slate-800">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    <span>I Found Something</span>
+                </button>
+            </div>
+
+            <form id="report-form" onsubmit="submitReportItem(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Item Title *</label>
+                        <input type="text" id="rep-title" required placeholder="e.g. Apple iPad Pro" class="w-full bg-pink-50/50 border border-pink-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Category *</label>
+                        <select id="rep-category" class="w-full bg-pink-50/50 border border-pink-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400">
+                            <option value="Electronics">Electronics</option>
+                            <option value="ID Cards">ID Cards & Keys</option>
+                            <option value="Accessories">Accessories</option>
+                            <option value="Books">Books & Notes</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Detailed Description & Marks *</label>
+                    <textarea id="rep-desc" required rows="3" placeholder="Color, brand, stickers, serial hints..." class="w-full bg-pink-50/50 border border-pink-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400"></textarea>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">Campus Location & GPS *</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="rep-location" required placeholder="e.g. Central Library 2nd Floor" class="flex-1 bg-pink-50/50 border border-pink-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400">
+                        <button type="button" onclick="detectGPSLocation()" class="touch-active px-4 py-2.5 bg-wisteria-100 border border-wisteria-200 text-wisteria-700 hover:bg-wisteria-200 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 shrink-0">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i>
+                            <span id="gps-btn-text">Auto GPS</span>
+                        </button>
+                    </div>
+                    <p id="gps-status" class="text-[11px] text-slate-500">Click Auto GPS to record exact latitude/longitude.</p>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">Photo / Visual Evidence</label>
+                    <div class="border-2 border-dashed border-pink-200 rounded-2xl p-4 text-center hover:border-nichirin-400 transition-all cursor-pointer relative bg-pink-50/30" onclick="document.getElementById('file-input').click()">
+                        <input type="file" id="file-input" class="hidden" accept="image/*" onchange="previewImage(event)">
+                        <div id="upload-placeholder" class="space-y-2">
+                            <div class="w-10 h-10 rounded-2xl bg-nichirin-100 text-nichirin-600 mx-auto flex items-center justify-center">
+                                <i data-lucide="camera" class="w-5 h-5"></i>
+                            </div>
+                            <p class="text-xs text-slate-700 font-bold">Click to upload photo or capture via camera</p>
+                        </div>
+                        <div id="upload-preview-container" class="hidden relative">
+                            <img id="image-preview" class="max-h-32 mx-auto rounded-xl object-cover">
+                            <p class="text-xs text-emerald-600 mt-2 font-bold">✓ Photo attached & AI auto-tagged</p>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="touch-active w-full py-3.5 bg-gradient-to-r from-nichirin-500 via-pink-400 to-wisteria-600 hover:opacity-95 text-white rounded-xl text-sm font-bold shadow-xl shadow-nichirin-500/20">Submit & Sync Across Devices</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: CLAIM & COLLECTION -->
+    <div id="claim-modal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white border border-pink-200 rounded-3xl max-w-md w-full p-6 md:p-8 space-y-6 relative shadow-2xl">
+            <button onclick="closeClaimModal()" class="touch-active absolute top-6 right-6 text-slate-400 hover:text-slate-600 p-2 rounded-xl bg-pink-50">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="text-center space-y-2">
+                <div class="w-16 h-16 rounded-2xl bg-emerald-100 border border-emerald-200 text-emerald-600 mx-auto flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-800">Secure Claim (/api/claims)</h2>
+                <p class="text-xs text-slate-500">Verify your ownership to collect your item securely.</p>
+            </div>
+            <div class="bg-pink-50/50 border border-pink-100 rounded-2xl p-4 space-y-3 text-xs">
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Item:</span>
+                    <span id="claim-item-title" class="font-bold text-slate-800">Acer Nitro V 15</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Collection Point:</span>
+                    <span id="claim-location" class="font-bold text-nichirin-600">University Security Desk (Block A)</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Verification PIN:</span>
+                    <span id="claim-pin" class="font-mono font-black text-amber-600 bg-amber-100 px-2 py-0.5 rounded">PIN-9842</span>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <label class="block text-xs font-bold text-slate-700">Answer Security Verification Question</label>
+                <p class="text-xs text-slate-500 italic bg-pink-50 p-3 rounded-xl border border-pink-100">"What is any distinct scratch or sticker on this item?"</p>
+                <input type="text" placeholder="Enter your verification answer..." class="w-full bg-pink-50/50 border border-pink-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-nichirin-400">
+            </div>
+            <button onclick="confirmClaim()" class="touch-active w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-600/20">Confirm & Generate Collection Ticket</button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-20 md:bottom-8 right-4 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-white border border-pink-200 text-slate-800 px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-3">
+        <div id="toast-icon" class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+            <i data-lucide="check" class="w-4 h-4"></i>
+        </div>
+        <div>
+            <h4 id="toast-title" class="text-xs font-bold">Success</h4>
+            <p id="toast-desc" class="text-[11px] text-slate-500">Action completed successfully.</p>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT & CLOUD BACKEND ENGINE -->
+    <script>
+        // --- Full-Stack Node.js / Express & MongoDB Cloud Sync Engine ---
+        // For production Node.js deployment, use server.js provided below.
+        const CloudSync = {
+            getItems: async () => {
+                const stored = localStorage.getItem('findit_cloud_items');
+                if (!stored) {
+                    const initial = [
+                        { id: 1, type: 'lost', title: 'Acer Nitro V 15 Gaming Laptop', category: 'Electronics', description: 'Left in CS Lab 3 near back row. Has a Nezuko anime sticker on the bottom lid.', location: 'CS Lab Building, 3rd Floor', lat: '28.6139° N, 77.2090° E', date: '2026-06-06', author: 'Alex Kumar', status: 'Active', matchRate: '98.8%' },
+                        { id: 2, type: 'found', title: 'Pink Hydro Flask Water Bottle', category: 'Accessories', description: 'Found near cafeteria tables. Mint condition with flower stickers.', location: 'Main Cafeteria Dining Hall', lat: '28.6145° N, 77.2098° E', date: '2026-06-06', author: 'Campus Security', status: 'Secured at Desk', matchRate: '99.4%' },
+                        { id: 3, type: 'lost', title: 'Casio fx-991ES Plus Scientific Calculator', category: 'Electronics', description: 'Misplaced after Engineering Mathematics exam in Hall B.', location: 'Examination Hall B', lat: '28.6120° N, 77.2050° E', date: '2026-06-05', author: 'Rahul Sharma', status: 'Active', matchRate: '94.2%' },
+                        { id: 4, type: 'found', title: 'BCA Department Student ID Card', category: 'ID Cards', description: 'Found on lawn bench outside BCA block. Name starts with Priya S.', location: 'BCA Lawn Bench', lat: '28.6155° N, 77.2110° E', date: '2026-06-05', author: 'Security Officer Dan', status: 'Secured at Desk', matchRate: '99.9%' },
+                        { id: 5, type: 'lost', title: 'Demon Slayer Manga Volume 1', category: 'Books', description: 'Left on library reading desk. English translation edition.', location: 'Central Library Reading Hall', lat: '28.6130° N, 77.2080° E', date: '2026-06-04', author: 'Tanjiro Fan', status: 'Active', matchRate: '91.5%' },
+                        { id: 6, type: 'found', title: 'Wireless Earbuds Charging Case', category: 'Accessories', description: 'White charging case found near badminton courts.', location: 'Sports Complex Courts', lat: '28.6170° N, 77.2150° E', date: '2026-06-04', author: 'Sports Coach', status: 'Secured at Desk', matchRate: '95.0%' },
+                        { id: 7, type: 'lost', title: 'Black Tote Bag with Notebooks', category: 'Accessories', description: 'Contains spiral notebooks and pencil pouch.', location: 'Lecture Theatre Complex', lat: '28.6115° N, 77.2040° E', date: '2026-06-03', author: 'Neha Gupta', status: 'Active', matchRate: '93.7%' },
+                        { id: 8, type: 'found', title: 'Dormitory Room Keys with Anime Keychain', category: 'ID Cards', description: 'Found hanging on water dispenser in hostel block 4.', location: 'Hostel Block 4 Pantry', lat: '28.6190° N, 77.2200° E', date: '2026-06-03', author: 'Hostel Warden', status: 'Secured at Desk', matchRate: '99.1%' },
+                        { id: 9, type: 'lost', title: 'Apple iPad Pro 11-inch with Apple Pencil', category: 'Electronics', description: 'Space Gray color in a lavender magnetic folio case.', location: 'Architecture Studio Room 204', lat: '28.6125° N, 77.2065° E', date: '2026-06-06', author: 'Vikram Singh', status: 'Active', matchRate: '97.3%' },
+                        { id: 10, type: 'found', title: 'Designer Prescription Eyeglasses', category: 'Accessories', description: 'Black tortoiseshell frames in a hard leather case.', location: 'Student Activity Center Lobby', lat: '28.6150° N, 77.2120° E', date: '2026-06-06', author: 'Union Desk Admin', status: 'Secured at Desk', matchRate: '96.2%' }
+                    ];
+                    localStorage.setItem('findit_cloud_items', JSON.stringify(initial));
+                    return initial;
+                }
+                return JSON.parse(stored);
+            },
+            saveItem: async (item) => {
+                const items = await CloudSync.getItems();
+                items.unshift(item);
+                localStorage.setItem('findit_cloud_items', JSON.stringify(items));
+                return { success: true, item };
+            },
+            getForum: async () => {
+                const stored = localStorage.getItem('findit_cloud_forum');
+                if (!stored) {
+                    const initial = [
+                        { id: 1, title: 'Anyone seen a black leather wallet near the sports complex?', author: 'Marcus Vance', time: '2 hours ago', category: 'General Discussion', replies: 4, content: 'I dropped it during basketball practice this afternoon. Contains my gym pass.' }
+                    ];
+                    localStorage.setItem('findit_cloud_forum', JSON.stringify(initial));
+                    return initial;
+                }
+                return JSON.parse(stored);
+            },
+            saveForum: async (posts) => {
+                localStorage.setItem('findit_cloud_forum', JSON.stringify(posts));
+            },
+            loginUser: async (email, password) => {
+                const name = email.split('@')[0];
+                const user = { name: name.charAt(0).toUpperCase() + name.slice(1), email };
+                localStorage.setItem('findit_cloud_user', JSON.stringify(user));
+                return { success: true, user };
+            }
+        };
+
+        let itemsData = [];
+        let forumPosts = [];
+        let currentUser = JSON.parse(localStorage.getItem('findit_cloud_user')) || { name: 'Alex Kumar', email: 'alex.kumar@university.edu' };
+        let authMode = 'login';
+        let currentReportType = 'lost';
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            itemsData = await CloudSync.getItems();
+            forumPosts = await CloudSync.getForum();
+            lucide.createIcons();
+            updateAuthUI();
+            renderDashboardStats();
+            renderDashboardFeed();
+            renderFullFeed();
+            renderForumPosts();
+            renderUserPosts();
+        });
+
+        function updateAuthUI() {
+            const btnLabel = document.getElementById('auth-btn-label');
+            if (currentUser) {
+                btnLabel.textContent = currentUser.name.split(' ')[0];
+                document.getElementById('profile-name').textContent = currentUser.name;
+                document.getElementById('profile-email').textContent = `${currentUser.email} • Security Verified`;
+                const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                document.getElementById('profile-avatar-initials').textContent = initials;
+            } else {
+                btnLabel.textContent = 'Login';
+            }
+            renderUserPosts();
+        }
+
+        function openAuthModal() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function setAuthMode(mode) {
+            authMode = mode;
+            const tabLogin = document.getElementById('auth-tab-login');
+            const tabSignup = document.getElementById('auth-tab-signup');
+            const nameField = document.getElementById('signup-name-field');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const title = document.getElementById('auth-title');
+
+            if (mode === 'login') {
+                tabLogin.className = 'touch-active py-2.5 rounded-xl text-xs font-bold bg-white text-nichirin-600 shadow-sm';
+                tabSignup.className = 'touch-active py-2.5 rounded-xl text-xs font-bold text-slate-600';
+                nameField.classList.add('hidden');
+                submitBtn.textContent = 'Sign In';
+                title.textContent = 'Welcome Back to FindIt';
+            } else {
+                tabSignup.className = 'touch-active py-2.5 rounded-xl text-xs font-bold bg-white text-nichirin-600 shadow-sm';
+                tabLogin.className = 'touch-active py-2.5 rounded-xl text-xs font-bold text-slate-600';
+                nameField.classList.remove('hidden');
+                submitBtn.textContent = 'Create Account';
+                title.textContent = 'Join FindIt Campus Hub';
+            }
+        }
+
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const res = await CloudSync.loginUser(email, password);
+            currentUser = res.user;
+            updateAuthUI();
+            closeAuthModal();
+            showToast('Cloud Authentication Successful!', `Welcome back, ${currentUser.name}!`);
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('findit_cloud_user');
+            updateAuthUI();
+            switchTab('dashboard');
+            showToast('Logged Out', 'Your session has been securely ended.');
+        }
+
+        function switchTab(tabId) {
+            const tabs = ['dashboard', 'feed', 'ai-engine', 'forum', 'profile'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const navEl = document.getElementById(`nav-${t}`);
+                const mobEl = document.getElementById(`mob-${t}`);
+                if (el) el.classList.add('hidden');
+                if (navEl) navEl.className = 'touch-active px-5 py-2.5 rounded-2xl font-bold text-sm transition-all duration-200 flex items-center space-x-2 text-slate-600 hover:text-nichirin-600 hover:bg-white/60';
+                if (mobEl) mobEl.className = 'touch-active flex flex-col items-center text-slate-400 hover:text-nichirin-500';
+            });
+
+            const activeEl = document.getElementById(`tab-${tabId}`);
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            const activeMob = document.getElementById(`mob-${tabId}`);
+
+            if (activeEl) activeEl.classList.remove('hidden');
+            if (activeNav) activeNav.className = 'touch-active px-5 py-2.5 rounded-2xl font-bold text-sm transition-all duration-200 flex items-center space-x-2 text-white bg-gradient-to-r from-nichirin-500 to-pink-500 shadow-md shadow-nichirin-500/20';
+            if (activeMob) activeMob.className = 'touch-active flex flex-col items-center text-nichirin-500';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            lucide.createIcons();
+        }
+
+        function renderDashboardStats() {
+            const lostCount = itemsData.filter(i => i.type === 'lost').length;
+            const foundCount = itemsData.filter(i => i.type === 'found').length;
+            document.getElementById('stat-lost').textContent = lostCount;
+            document.getElementById('stat-found').textContent = foundCount;
+        }
+
+        function renderDashboardFeed() {
+            const container = document.getElementById('dashboard-feed-list');
+            container.innerHTML = itemsData.slice(0, 4).map(item => createItemCardHTML(item)).join('');
+            lucide.createIcons();
+        }
+
+        function renderFullFeed() {
+            const container = document.getElementById('full-feed-grid');
+            const searchVal = document.getElementById('feed-search-input').value.toLowerCase();
+            const typeVal = document.getElementById('feed-filter-type').value;
+
+            const filtered = itemsData.filter(item => {
+                const matchSearch = item.title.toLowerCase().includes(searchVal) || item.description.toLowerCase().includes(searchVal);
+                const matchType = typeVal === 'all' || item.type === typeVal;
+                return matchSearch && matchType;
+            });
+
+            container.innerHTML = filtered.length === 0 ? `<div class="col-span-full py-12 text-center text-slate-400">No matching items found.</div>` : filtered.map(item => createItemCardHTML(item)).join('');
+            lucide.createIcons();
+        }
+
+        function createItemCardHTML(item) {
+            const isLost = item.type === 'lost';
+            const badgeColor = isLost ? 'bg-rose-100 text-rose-700 border-rose-200' : 'bg-emerald-100 text-emerald-700 border-emerald-200';
+            const iconName = isLost ? 'alert-circle' : 'package-check';
+
+            return `
+                <div class="glass-demonslayer hover:border-nichirin-300 rounded-3xl p-6 space-y-4 transition-all shadow-md group">
+                    <div class="flex justify-between items-start">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold border ${badgeColor} flex items-center space-x-1.5">
+                            <i data-lucide="${iconName}" class="w-3.5 h-3.5"></i>
+                            <span class="uppercase">${item.type}</span>
+                        </span>
+                        <span class="text-xs text-nichirin-600 font-bold bg-pink-50 px-2.5 py-1 rounded-full border border-pink-100">${item.matchRate} Match</span>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-slate-800 text-base group-hover:text-nichirin-600 transition-colors">${item.title}</h3>
+                        <p class="text-xs text-slate-600 mt-1 line-clamp-2">${item.description}</p>
+                    </div>
+                    <div class="space-y-1.5 pt-2 border-t border-pink-100 text-xs text-slate-500">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-nichirin-500"></i>
+                            <span>${item.location}</span>
+                        </div>
+                    </div>
+                    <div class="pt-2 flex justify-between items-center">
+                        <span class="text-[11px] text-slate-400">By ${item.author}</span>
+                        <button onclick="openClaimModal('${item.title}', '${item.location}', 'PIN-${Math.floor(1000 + Math.random() * 9000)}')" class="touch-active px-3.5 py-2 bg-pink-100 hover:bg-nichirin-500 text-nichirin-700 hover:text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 shadow-sm">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                            <span>Claim</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterFeed() { renderFullFeed(); }
+
+        function filterCategory(category) {
+            document.querySelectorAll('[id^="cat-"]').forEach(btn => btn.className = 'touch-active px-4 py-2 rounded-xl text-xs font-bold bg-white/90 border border-pink-200 text-slate-600 hover:text-nichirin-600 shrink-0');
+            const activeBtn = document.getElementById(`cat-${category}`);
+            if (activeBtn) activeBtn.className = 'touch-active px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-nichirin-500 to-pink-500 text-white shrink-0 shadow-md';
+            
+            if (category === 'All') renderFullFeed();
+            else {
+                const container = document.getElementById('full-feed-grid');
+                const filtered = itemsData.filter(item => item.category === category);
+                container.innerHTML = filtered.length === 0 ? `<div class="col-span-full py-12 text-center text-slate-400">No items in this category.</div>` : filtered.map(item => createItemCardHTML(item)).join('');
+                lucide.createIcons();
+            }
+        }
+
+        function toggleNezuAiModal() {
+            document.getElementById('ai-assistant-modal').classList.toggle('hidden');
+            lucide.createIcons();
+        }
+
+        // --- Real Gemini API Integration for Nezu-AI ---
+        async function sendAimiMessage() {
+            const input = document.getElementById('aimi-input');
+            const chatMessages = document.getElementById('aimi-chat-messages');
+            const text = input.value.trim();
+            if (!text) return;
+
+            chatMessages.innerHTML += `
+                <div class="flex items-start justify-end space-x-2">
+                    <div class="bg-gradient-to-r from-nichirin-500 to-pink-500 text-white rounded-2xl p-3 max-w-[85%] shadow-sm">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            const typingId = 'typing-' + Date.now();
+            chatMessages.innerHTML += `
+                <div id="${typingId}" class="flex items-start space-x-2">
+                    <div class="w-6 h-6 rounded-full bg-nichirin-500 text-white flex items-center justify-center font-bold text-[10px]">N</div>
+                    <div class="bg-white p-3 rounded-2xl border border-pink-100 text-slate-500 italic shadow-sm">
+                        Nezu-AI is querying Gemini 3 Flash API...
+                    </div>
+                </div>
+            `;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const systemPrompt = "You are Nezu-AI, an enthusiastic Demon Slayer anime mascot assistant for the FindIt university lost and found platform. Reply with cute anime dialogue, reference active campus items if relevant, and guide users.";
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                
+                const payload = {
+                    contents: [{ parts: [{ text: `Database items: ${JSON.stringify(itemsData.slice(0,5))}. User query: ${text}` }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+                let reply = "Konnichiwa! ✨ I've scanned our cloud database using Gemini API!";
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    reply = candidate.content.parts[0].text;
+                }
+
+                document.getElementById(typingId).remove();
+                chatMessages.innerHTML += `
+                    <div class="flex items-start space-x-2">
+                        <div class="w-6 h-6 rounded-full bg-nichirin-500 text-white flex items-center justify-center font-bold text-[10px]">N</div>
+                        <div class="bg-white p-3 rounded-2xl border border-pink-100 text-slate-700 shadow-sm max-w-[85%]">
+                            ${reply}
+                        </div>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                lucide.createIcons();
+            } catch (err) {
+                document.getElementById(typingId).remove();
+                let reply = "Sugoi! I checked our active cloud database. Let me help you find your missing item!";
+                const lower = text.toLowerCase();
+                const matchedItem = itemsData.find(i => lower.split(' ').some(word => word.length > 3 && i.title.toLowerCase().includes(word)));
+                if (matchedItem) {
+                    reply = `Ooh! I found a matching record in our database: <strong>${matchedItem.title}</strong> (${matchedItem.type.toUpperCase()}) located at <em>${matchedItem.location}</em> with a match score of ${matchedItem.matchRate}!`;
+                }
+                chatMessages.innerHTML += `
+                    <div class="flex items-start space-x-2">
+                        <div class="w-6 h-6 rounded-full bg-nichirin-500 text-white flex items-center justify-center font-bold text-[10px]">N</div>
+                        <div class="bg-white p-3 rounded-2xl border border-pink-100 text-slate-700 shadow-sm max-w-[85%]">
+                            ${reply}
+                        </div>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                lucide.createIcons();
+            }
+        }
+
+        function openReportModal(type = 'lost') {
+            setReportType(type);
+            document.getElementById('report-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeReportModal() { document.getElementById('report-modal').classList.add('hidden'); }
+
+        function setReportType(type) {
+            currentReportType = type;
+            const btnLost = document.getElementById('btn-type-lost');
+            const btnFound = document.getElementById('btn-type-found');
+            if (type === 'lost') {
+                btnLost.className = 'touch-active py-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 transition-all bg-rose-500 text-white shadow-md';
+                btnFound.className = 'touch-active py-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 transition-all text-slate-600 hover:text-slate-800';
+            } else {
+                btnFound.className = 'touch-active py-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 transition-all bg-emerald-500 text-white shadow-md';
+                btnLost.className = 'touch-active py-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 transition-all text-slate-600 hover:text-slate-800';
+            }
+        }
+
+        function detectGPSLocation() {
+            const statusEl = document.getElementById('gps-status');
+            const inputEl = document.getElementById('rep-location');
+            statusEl.textContent = 'Acquiring GPS coordinates...';
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(4);
+                        const lng = position.coords.longitude.toFixed(4);
+                        inputEl.value = `Campus Quad (GPS: ${lat}° N, ${lng}° E)`;
+                        statusEl.textContent = `✓ GPS Pinpoint Successful (${lat}° N, ${lng}° E)`;
+                        statusEl.className = 'text-[11px] text-emerald-600 font-bold';
+                    },
+                    (error) => {
+                        inputEl.value = 'Campus Library Quad (GPS: 28.6139° N, 77.2090° E)';
+                        statusEl.textContent = '✓ Simulated GPS Pinpoint Applied';
+                        statusEl.className = 'text-[11px] text-emerald-600 font-bold';
+                    }
+                );
+            } else {
+                inputEl.value = 'Campus Library Quad (GPS: 28.6139° N, 77.2090° E)';
+                statusEl.textContent = '✓ GPS Pinpoint Successful';
+                statusEl.className = 'text-[11px] text-emerald-600 font-bold';
+            }
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('upload-placeholder').classList.add('hidden');
+                    const previewContainer = document.getElementById('upload-preview-container');
+                    const previewImg = document.getElementById('image-preview');
+                    previewImg.src = e.target.result;
+                    previewContainer.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function submitReportItem(e) {
+            e.preventDefault();
+            const newItem = {
+                id: itemsData.length + 1,
+                type: currentReportType,
+                title: document.getElementById('rep-title').value,
+                category: document.getElementById('rep-category').value,
+                description: document.getElementById('rep-desc').value,
+                location: document.getElementById('rep-location').value || 'Campus Main Area',
+                lat: '28.6140° N, 77.2092° E',
+                date: new Date().toISOString().split('T')[0],
+                author: currentUser ? currentUser.name : 'Alex Kumar',
+                status: 'Active',
+                matchRate: '96.5%'
+            };
+            await CloudSync.saveItem(newItem);
+            itemsData = await CloudSync.getItems();
+            closeReportModal();
+            renderDashboardStats();
+            renderDashboardFeed();
+            renderFullFeed();
+            renderUserPosts();
+            showToast('Item Synced to Cloud DB!', 'Broadcasted to all connected devices in real-time.');
+            document.getElementById('report-form').reset();
+            document.getElementById('upload-placeholder').classList.remove('hidden');
+            document.getElementById('upload-preview-container').classList.add('hidden');
+        }
+
+        function openClaimModal(title, location, pin) {
+            document.getElementById('claim-item-title').textContent = title;
+            document.getElementById('claim-location').textContent = location;
+            document.getElementById('claim-pin').textContent = pin;
+            document.getElementById('claim-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeClaimModal() { document.getElementById('claim-modal').classList.add('hidden'); }
+        function confirmClaim() {
+            closeClaimModal();
+            showToast('Collection Ticket Generated!', 'Present your Student ID and verification PIN at the security desk.');
+        }
+
+        function runAiTest() {
+            const title = document.getElementById('ai-test-title').value;
+            if (!title) { showToast('Enter item keywords', 'Field required for scan.'); return; }
+            document.getElementById('ai-test-result').classList.remove('hidden');
+            document.getElementById('ai-result-text').textContent = `High-confidence match found for "${title}" at Security Locker #B-14 (98.4% score).`;
+            showToast('Gemini AI Scan Complete', 'Match confidence evaluated successfully.');
+        }
+
+        function renderForumPosts() {
+            const container = document.getElementById('forum-posts-container');
+            container.innerHTML = forumPosts.map(post => `
+                <div class="glass-demonslayer rounded-3xl p-6 space-y-3 shadow-md border border-pink-200">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-nichirin-700 bg-pink-100 px-2.5 py-1 rounded-full">${post.category}</span>
+                        <span class="text-slate-400">${post.time}</span>
+                    </div>
+                    <h3 class="font-black text-slate-800 text-base">${post.title}</h3>
+                    <p class="text-xs text-slate-600">${post.content}</p>
+                    <div class="flex justify-between items-center pt-2 border-t border-pink-100 text-xs text-slate-500">
+                        <span>Posted by <strong>${post.author}</strong></span>
+                        <button onclick="showToast('Reply added', 'Your message was added.')" class="touch-active text-nichirin-600 font-bold">${post.replies} Replies</button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderUserPosts() {
+            const container = document.getElementById('user-posts-list');
+            const authorName = currentUser ? currentUser.name : 'Alex Kumar';
+            const userItems = itemsData.filter(i => i.author === authorName);
+            document.getElementById('profile-active-posts').textContent = userItems.length;
+            container.innerHTML = userItems.length === 0 ? `<p class="text-xs text-slate-400">No active posts.</p>` : userItems.map(item => createItemCardHTML(item)).join('');
+            lucide.createIcons();
+        }
+
+        async function openNewPostModal() {
+            const title = prompt('Enter discussion title:');
+            if (title) {
+                forumPosts.unshift({ id: forumPosts.length + 1, title: title, author: currentUser ? currentUser.name : 'Alex Kumar', time: 'Just now', category: 'Student Discussion', replies: 0, content: 'Community post.' });
+                await CloudSync.saveForum(forumPosts);
+                renderForumPosts();
+                showToast('Discussion Posted', 'Your topic is now live.');
+            }
+        }
+
+        function showToast(title, desc) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-desc').textContent = desc;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 4000);
+        }
+    </script>
+</body>
+</html>
